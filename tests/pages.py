@@ -168,6 +168,16 @@ class UrbanRoutesPage:
 
         sleep(1)
 
+    def get_from_address(self):
+        return self.wait.until(
+            EC.visibility_of_element_located(self.FROM_INPUT)
+        ).get_attribute("value")
+
+    def get_to_address(self):
+        return self.wait.until(
+            EC.visibility_of_element_located(self.TO_INPUT)
+        ).get_attribute("value")
+
     # =========================
     # SUPPORTIVE TARIFF
     # =========================
@@ -183,11 +193,9 @@ class UrbanRoutesPage:
             ).click()
 
     def is_supportive_selected(self):
-        return bool(
-            self.driver.find_elements(
-                *self.SELECTED_SUPPORTIVE_TARIFF
-            )
-        )
+        element = self.driver.find_element(*self.SUPPORTIVE_TARIFF)
+        gelement = element.find_element(By.XPATH, "./..")
+        return gelement.get_attribute("class");
 
     # =========================
     # PHONE
@@ -225,9 +233,23 @@ class UrbanRoutesPage:
             )
         ).click()
 
+    def get_phone_number(self):
+
+        return self.wait.until(
+            EC.presence_of_element_located((self.PHONE_INPUT))
+        ).get_attribute("value")
+
+
     # =========================
     # CREDIT CARD
     # =========================
+
+    def get_payment_method_text(self):
+        return self.wait.until(
+            EC.visibility_of_element_located(
+                self.PAYMENT_METHOD_CONTAINER
+            )
+        ).text
 
     def add_credit_card(self, card_number, card_code):
         self.wait.until(
@@ -282,6 +304,11 @@ class UrbanRoutesPage:
                 self.COMMENT_INPUT
             )
         ).send_keys(message)
+
+    def get_driver_comment(self):
+        return self.wait.until(
+            EC.visibility_of_element_located(self.COMMENT_INPUT)
+        ).get_attribute("value")
 
     # =========================
     # BLANKET / HANDKERCHIEFS

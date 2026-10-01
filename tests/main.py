@@ -3,7 +3,7 @@ from selenium.webdriver.chrome.options import Options
 from time import sleep
 
 import data
-from helpers import helpers as h
+import helpers as h
 from pages import UrbanRoutesPage
 
 class TestUrbanRoutes:
@@ -32,13 +32,8 @@ class TestUrbanRoutes:
         urban_routes_page.enter_to_address(data.ADDRESS_TO)
         urban_routes_page.click_call_taxi()
         sleep(2)
-        assert self.driver.find_element(
-            *urban_routes_page.FROM_INPUT
-        ).get_attribute("value") == data.ADDRESS_FROM
-
-        assert self.driver.find_element(
-            *urban_routes_page.TO_INPUT
-        ).get_attribute("value") == data.ADDRESS_TO
+        assert urban_routes_page.get_from_address() == data.ADDRESS_FROM
+        assert urban_routes_page.get_to_address() == data.ADDRESS_TO
 
     def test_select_supportive_plan(self):
         self.driver.get(data.URBAN_ROUTES_URL)
@@ -51,7 +46,7 @@ class TestUrbanRoutes:
 
         urban_routes_page.select_supportive_plan()
 
-        assert urban_routes_page.is_supportive_selected()
+        assert "active" in urban_routes_page.is_supportive_selected()
 
     def test_fill_phone_number(self):
         self.driver.get(data.URBAN_ROUTES_URL)
@@ -69,9 +64,10 @@ class TestUrbanRoutes:
 
         urban_routes_page.enter_phone_code(code)
 
-        assert self.driver.find_element(
-            *urban_routes_page.PHONE_INPUT
-        ).get_attribute("value") == data.PHONE_NUMBER
+        sleep(2)
+
+        result = urban_routes_page.get_phone_number()
+        assert result == data.PHONE_NUMBER
 
     def test_add_credit_card(self):
         self.driver.get(data.URBAN_ROUTES_URL)
@@ -88,17 +84,7 @@ class TestUrbanRoutes:
             data.CARD_CODE
         )
         sleep(5)
-
-        all_elements = self.driver.find_elements(*urban_routes_page.PAYMENT_METHOD_CONTAINER)
-
-        # 2. Loop through and print their tag names or text
-        for element in all_elements:
-            print(element.tag_name, element.text)
-
-        sleep(5)
-        assert "Card" in self.driver.find_element(
-            *urban_routes_page.PAYMENT_METHOD_CONTAINER
-        ).text
+        assert "Card" in urban_routes_page.get_payment_method_text()
 
     def test_comment_for_driver(self):
         self.driver.get(data.URBAN_ROUTES_URL)
@@ -114,9 +100,7 @@ class TestUrbanRoutes:
             data.MESSAGE_FOR_DRIVER
         )
 
-        assert self.driver.find_element(
-            *urban_routes_page.COMMENT_INPUT
-        ).get_attribute("value") == data.MESSAGE_FOR_DRIVER
+        assert urban_routes_page.get_driver_comment() == data.MESSAGE_FOR_DRIVER
 
     def test_order_blanket_and_handkerchiefs(self):
         self.driver.get(data.URBAN_ROUTES_URL)
