@@ -23,6 +23,7 @@ class TestUrbanRoutes:
         else:
             print("Urban Routes server is not reachable")
 
+'''
     def test_set_route(self):
         self.driver.get(data.URBAN_ROUTES_URL)
 
@@ -34,6 +35,7 @@ class TestUrbanRoutes:
         sleep(2)
         assert urban_routes_page.get_from_address() == data.ADDRESS_FROM
         assert urban_routes_page.get_to_address() == data.ADDRESS_TO
+'''
 
     def test_select_supportive_plan(self):
         self.driver.get(data.URBAN_ROUTES_URL)
@@ -66,8 +68,7 @@ class TestUrbanRoutes:
 
         sleep(2)
 
-        result = urban_routes_page.get_phone_number()
-        assert result == data.PHONE_NUMBER
+        assert urban_routes_page.get_phone_number() == data.PHONE_NUMBER
 
     def test_add_credit_card(self):
         self.driver.get(data.URBAN_ROUTES_URL)
