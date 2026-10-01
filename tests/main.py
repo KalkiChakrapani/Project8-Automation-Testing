@@ -6,6 +6,7 @@ import data
 import helpers as h
 from pages import UrbanRoutesPage
 
+
 class TestUrbanRoutes:
 
     @classmethod
@@ -23,19 +24,18 @@ class TestUrbanRoutes:
         else:
             print("Urban Routes server is not reachable")
 
-'''
-    def test_set_route(self):
-        self.driver.get(data.URBAN_ROUTES_URL)
-
-        urban_routes_page = UrbanRoutesPage(self.driver)
-        sleep(2)
-        urban_routes_page.enter_from_address(data.ADDRESS_FROM)
-        urban_routes_page.enter_to_address(data.ADDRESS_TO)
-        urban_routes_page.click_call_taxi()
-        sleep(2)
-        assert urban_routes_page.get_from_address() == data.ADDRESS_FROM
-        assert urban_routes_page.get_to_address() == data.ADDRESS_TO
-'''
+    # Temporarily disabled
+    # def test_set_route(self):
+    #     self.driver.get(data.URBAN_ROUTES_URL)
+    #
+    #     urban_routes_page = UrbanRoutesPage(self.driver)
+    #     sleep(2)
+    #     urban_routes_page.enter_from_address(data.ADDRESS_FROM)
+    #     urban_routes_page.enter_to_address(data.ADDRESS_TO)
+    #     urban_routes_page.click_call_taxi()
+    #     sleep(2)
+    #     assert urban_routes_page.get_from_address() == data.ADDRESS_FROM
+    #     assert urban_routes_page.get_to_address() == data.ADDRESS_TO
 
     def test_select_supportive_plan(self):
         self.driver.get(data.URBAN_ROUTES_URL)
@@ -84,7 +84,9 @@ class TestUrbanRoutes:
             data.CARD_NUMBER,
             data.CARD_CODE
         )
+
         sleep(5)
+
         assert "Card" in urban_routes_page.get_payment_method_text()
 
     def test_comment_for_driver(self):
