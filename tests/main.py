@@ -24,18 +24,17 @@ class TestUrbanRoutes:
         else:
             print("Urban Routes server is not reachable")
 
-    # Temporarily disabled
-    # def test_set_route(self):
-    #     self.driver.get(data.URBAN_ROUTES_URL)
-    #
-    #     urban_routes_page = UrbanRoutesPage(self.driver)
-    #     sleep(2)
-    #     urban_routes_page.enter_from_address(data.ADDRESS_FROM)
-    #     urban_routes_page.enter_to_address(data.ADDRESS_TO)
-    #     urban_routes_page.click_call_taxi()
-    #     sleep(2)
-    #     assert urban_routes_page.get_from_address() == data.ADDRESS_FROM
-    #     assert urban_routes_page.get_to_address() == data.ADDRESS_TO
+    def test_set_route(self):
+        self.driver.get(data.URBAN_ROUTES_URL)
+
+        urban_routes_page = UrbanRoutesPage(self.driver)
+        sleep(2)
+
+        urban_routes_page.enter_from_address(data.ADDRESS_FROM)
+        urban_routes_page.enter_to_address(data.ADDRESS_TO)
+
+        assert urban_routes_page.get_from_address() == data.ADDRESS_FROM
+        assert urban_routes_page.get_to_address() == data.ADDRESS_TO
 
     def test_select_supportive_plan(self):
         self.driver.get(data.URBAN_ROUTES_URL)
@@ -63,7 +62,6 @@ class TestUrbanRoutes:
         urban_routes_page.enter_phone_number(data.PHONE_NUMBER)
 
         code = h.retrieve_phone_code(self.driver)
-
         urban_routes_page.enter_phone_code(code)
 
         sleep(2)
@@ -146,7 +144,6 @@ class TestUrbanRoutes:
         urban_routes_page.enter_phone_number(data.PHONE_NUMBER)
 
         code = h.retrieve_phone_code(self.driver)
-
         urban_routes_page.enter_phone_code(code)
 
         urban_routes_page.enter_driver_comment(
