@@ -1,5 +1,3 @@
-from time import sleep
-
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
@@ -22,55 +20,62 @@ class UrbanRoutesPage:
 
     CALL_TAXI_BUTTON = (
         By.XPATH,
-        "//button[contains(@class, 'button') and text()='Call a taxi']"
+        "//button[contains(@class, 'button') and "
+        "contains(normalize-space(.), 'Call a taxi')]"
     )
 
     # Supportive tariff
     SUPPORTIVE_TARIFF = (
         By.XPATH,
-        "//div[contains(@class, 'tcard-title') and text()='Supportive']"
+        "//div[contains(@class, 'tcard-title') and "
+        "contains(normalize-space(.), 'Supportive')]"
     )
 
     SELECTED_SUPPORTIVE_TARIFF = (
         By.XPATH,
         "//div[contains(@class, 'tcard') and contains(@class, 'active')]"
-        "[.//div[text()='Supportive']]"
+        "[.//div[contains(normalize-space(.), 'Supportive')]]"
     )
 
     # Phone
     PHONE_NUMBER_BUTTON = (
         By.XPATH,
-        "//div[contains(@class, 'np-text') and contains(text(), 'Phone number')]"
+        "//div[contains(@class, 'np-text') and "
+        "contains(normalize-space(.), 'Phone number')]"
     )
 
     PHONE_INPUT = (By.ID, "phone")
 
     PHONE_NEXT_BUTTON = (
         By.XPATH,
-        "//button[contains(@class, 'button') and contains(text(), 'Next')]"
+        "//button[contains(@class, 'button') and "
+        "contains(normalize-space(.), 'Next')]"
     )
 
     PHONE_CODE_INPUT = (By.ID, "code")
 
     PHONE_CONFIRM_BUTTON = (
         By.XPATH,
-        "//button[contains(text(), 'Confirm')]"
+        "//button[contains(normalize-space(.), 'Confirm')]"
     )
 
     # Payment
     PAYMENT_METHOD = (
         By.XPATH,
-        "//div[contains(@class, 'pp-text') and contains(text(), 'Payment method')]"
+        "//div[contains(@class, 'pp-text') and "
+        "contains(normalize-space(.), 'Payment method')]"
     )
 
     PAYMENT_METHOD_CONTAINER = (
         By.XPATH,
-        "//div[contains(@class, 'pp-text') and contains(text(), 'Payment method')]/.."
+        "//div[contains(@class, 'pp-text') and "
+        "contains(normalize-space(.), 'Payment method')]/.."
     )
 
     ADD_CARD_BUTTON = (
         By.XPATH,
-        "//div[contains(@class, 'pp-title') and contains(text(), 'Add card')]"
+        "//div[contains(@class, 'pp-title') and "
+        "contains(normalize-space(.), 'Add card')]"
     )
 
     CARD_NUMBER_INPUT = (By.ID, "number")
@@ -82,7 +87,7 @@ class UrbanRoutesPage:
 
     LINK_BUTTON = (
         By.XPATH,
-        "//button[contains(text(), 'Link')]"
+        "//button[contains(normalize-space(.), 'Link')]"
     )
 
     CLOSE_PAYMENT_MODAL = (
@@ -97,29 +102,29 @@ class UrbanRoutesPage:
     # Blanket and handkerchiefs
     BLANKET_CLICK = (
         By.XPATH,
-        "//div[@class='r-sw-label' and contains(text(), "
-        "'Blanket and handkerchiefs')]"
+        "//div[@class='r-sw-label' and "
+        "contains(normalize-space(.), 'Blanket and handkerchiefs')]"
         "/following-sibling::div[@class='r-sw']//span"
     )
 
     BLANKET_SWITCH = (
         By.XPATH,
-        "//div[@class='r-sw-label' and contains(text(), "
-        "'Blanket and handkerchiefs')]"
+        "//div[@class='r-sw-label' and "
+        "contains(normalize-space(.), 'Blanket and handkerchiefs')]"
         "/following-sibling::div[@class='r-sw']//input"
     )
 
     # Ice cream
     ICE_CREAM_PLUS = (
         By.XPATH,
-        "//div[text()='Ice cream']"
+        "//div[normalize-space(.)='Ice cream']"
         "/following-sibling::div[@class='r-counter']"
         "//div[@class='counter-plus']"
     )
 
     ICE_CREAM_COUNT = (
         By.XPATH,
-        "//div[text()='Ice cream']"
+        "//div[normalize-space(.)='Ice cream']"
         "/following-sibling::div[@class='r-counter']"
         "//div[@class='counter-value']"
     )
@@ -143,31 +148,6 @@ class UrbanRoutesPage:
             EC.visibility_of_element_located(self.TO_INPUT)
         ).send_keys(address)
 
-    def click_call_taxi(self):
-        sleep(1)
-
-        button = self.wait.until(
-            EC.presence_of_element_located(
-                self.CALL_TAXI_BUTTON
-            )
-        )
-
-        self.wait.until(
-            lambda driver: (
-                button.is_displayed()
-                and button.is_enabled()
-            )
-        )
-
-        # The physical Selenium click can be intercepted by
-        # the tariff card. JavaScript triggers the button directly.
-        self.driver.execute_script(
-            "arguments[0].click();",
-            button
-        )
-
-        sleep(1)
-
     def get_from_address(self):
         return self.wait.until(
             EC.visibility_of_element_located(self.FROM_INPUT)
@@ -178,14 +158,25 @@ class UrbanRoutesPage:
             EC.visibility_of_element_located(self.TO_INPUT)
         ).get_attribute("value")
 
+    def click_call_taxi(self):
+        button = self.wait.until(
+            EC.element_to_be_clickable(self.CALL_TAXI_BUTTON)
+        )
+        self.driver.execute_script(
+            "arguments[0].click();",
+            button
+        )
+
     # =========================
     # SUPPORTIVE TARIFF
     # =========================
 
     def select_supportive_plan(self):
-        if not self.driver.find_elements(
+        selected = self.driver.find_elements(
             *self.SELECTED_SUPPORTIVE_TARIFF
-        ):
+        )
+
+        if not selected:
             self.wait.until(
                 EC.element_to_be_clickable(
                     self.SUPPORTIVE_TARIFF
@@ -193,9 +184,16 @@ class UrbanRoutesPage:
             ).click()
 
     def is_supportive_selected(self):
-        element = self.driver.find_element(*self.SUPPORTIVE_TARIFF)
-        gelement = element.find_element(By.XPATH, "./..")
-        return gelement.get_attribute("class");
+        element = self.wait.until(
+            EC.presence_of_element_located(
+                self.SUPPORTIVE_TARIFF
+            )
+        )
+        parent = element.find_element(
+            By.XPATH,
+            "./.."
+        )
+        return parent.get_attribute("class")
 
     # =========================
     # PHONE
@@ -234,11 +232,11 @@ class UrbanRoutesPage:
         ).click()
 
     def get_phone_number(self):
-
         return self.wait.until(
-            EC.presence_of_element_located((self.PHONE_INPUT))
+            EC.presence_of_element_located(
+                self.PHONE_INPUT
+            )
         ).get_attribute("value")
-
 
     # =========================
     # CREDIT CARD
@@ -277,9 +275,6 @@ class UrbanRoutesPage:
         )
 
         card_code_input.send_keys(card_code)
-
-        # Move focus away from the CVV field so the Link
-        # button can become enabled.
         card_code_input.send_keys(Keys.TAB)
 
         self.wait.until(
@@ -307,7 +302,9 @@ class UrbanRoutesPage:
 
     def get_driver_comment(self):
         return self.wait.until(
-            EC.visibility_of_element_located(self.COMMENT_INPUT)
+            EC.visibility_of_element_located(
+                self.COMMENT_INPUT
+            )
         ).get_attribute("value")
 
     # =========================
