@@ -1,5 +1,6 @@
+import time
+
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -162,6 +163,7 @@ class UrbanRoutesPage:
         button = self.wait.until(
             EC.element_to_be_clickable(self.CALL_TAXI_BUTTON)
         )
+
         self.driver.execute_script(
             "arguments[0].click();",
             button
@@ -189,10 +191,12 @@ class UrbanRoutesPage:
                 self.SUPPORTIVE_TARIFF
             )
         )
+
         parent = element.find_element(
             By.XPATH,
             "./.."
         )
+
         return parent.get_attribute("class")
 
     # =========================
@@ -275,17 +279,18 @@ class UrbanRoutesPage:
         )
 
         card_code_input.send_keys(card_code)
-        card_code_input.send_keys(Keys.TAB)
+
+        self.wait.until(
+            EC.element_to_be_clickable(
+                self.CARD_NUMBER_INPUT
+            )
+        ).click()
+
+        time.sleep(2)
 
         self.wait.until(
             EC.element_to_be_clickable(
                 self.LINK_BUTTON
-            )
-        ).click()
-
-        self.wait.until(
-            EC.element_to_be_clickable(
-                self.CLOSE_PAYMENT_MODAL
             )
         ).click()
 

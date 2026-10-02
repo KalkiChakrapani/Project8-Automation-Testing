@@ -1,6 +1,3 @@
-# Retrieves Phone code. Do not change
-# File should be completely unchanged
-
 def retrieve_phone_code(driver) -> str:
     """This code retrieves phone confirmation number and returns it as a string.
     Use it when application waits for the confirmation code to pass it into your tests.
@@ -46,7 +43,6 @@ def is_url_reachable(url):
         ssl_ctx.verify_mode = ssl.CERT_NONE
 
         with urllib.request.urlopen(url, context=ssl_ctx) as response:
-            # print("Response Status Code:", response.status) #for debugging purposes
             if response.status == 200:
                 return True
             else:
